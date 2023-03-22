@@ -1,7 +1,9 @@
 import * as bodyParser from "body-parser";
 import express from "express";
 import { FlatController } from "./controller/flat.controller";
-import 'dotenv/config'
+import 'dotenv/config';
+import cors from 'cors';
+import url from 'url'
 
 class App {
     public express: express.Application;
@@ -17,11 +19,29 @@ class App {
     private middleware(): void {
         this.express.use(bodyParser.json());
         this.express.use(bodyParser.urlencoded({ extended: false }));
+        this.express.use(cors())
     }
 
     private routes(): void {
         this.express.get('/api/flats', (req, res) => {
-            this.flatController.getFlats().then((data: any) => res.json(data));
+            let urlParsed = url.parse(req.url, true)
+
+            let limit = undefined
+            let offset = undefined
+
+            if (urlParsed.query.limit && !Array.isArray(urlParsed.query.limit)) {
+                limit = parseInt(urlParsed.query.limit)
+            }
+
+            if (urlParsed.query.offset && !Array.isArray(urlParsed.query.offset)) {
+                offset = parseInt(urlParsed.query.offset)
+            }
+
+            this.flatController.getFlats(limit, offset).then((data: any) => res.json(data));
+        });
+
+        this.express.get('/api/flatsNumber', (req, res) => {
+            this.flatController.getFlatsNumber().then((data: any) => res.json(data));
         });
         
         this.express.post('/api/flat', (req, res) => {

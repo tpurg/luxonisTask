@@ -8,8 +8,12 @@ export class FlatService {
         this.flatRepository = FlatRepository.getInstance();
     }
 
-    async getFlats() {
-        return await this.flatRepository.getFlats();
+    async getFlats(limit: number | undefined, offset: number | undefined) {
+        return await this.flatRepository.getFlats(limit, offset);
+    }
+
+    async getFlatsNumber() {
+        return await this.flatRepository.getFlatsNumber();
     }
 
     async createFlat(flat: Flats) {

@@ -8,8 +8,12 @@ export class FlatController {
         this.flatService = new FlatService();
     }
 
-    async getFlats() {
-        return await this.flatService.getFlats();
+    async getFlats(limit: number | undefined, offset: number | undefined) {
+        return await this.flatService.getFlats(limit, offset);
+    }
+
+    async getFlatsNumber() {
+        return await this.flatService.getFlatsNumber();
     }
 
     async createFlat(flat: Flats) {
