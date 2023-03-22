@@ -1,0 +1,12 @@
+.navigation  {
+    height: 70px;
+    width: 100%;
+    background-color: #b78272;
+    display: flex;
+}
+
+.tab {
+    text-align: center;
+    margin: auto 0px;
+    padding: 0px 20px;
+}

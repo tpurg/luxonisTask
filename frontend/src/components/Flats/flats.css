@@ -1,0 +1,30 @@
+.flats {
+    text-align: center;
+    width: 100%;
+    padding: 60px 160px 0px 160px;
+}
+
+.MuiPagination-root {
+    display: table;
+    margin: auto;
+    padding: 30px;
+}
+
+.flatsSelect {
+    display: flex;
+    width: fit-content;
+    background-color: #b78272;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.flatsSelect p {
+   margin-right: 5px;
+}
+
+.flatsSelect select {
+    border: none;
+    margin-top: 13px;
+    height: 25px;
+    background-color: #b78272;
+ }
