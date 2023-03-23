@@ -1,4 +1,4 @@
-version: "2"
+version: "3.4"
 services:
   frontend:
     container_name: frontend
@@ -11,6 +11,10 @@ services:
     image: backend_template
     build:
       context: ./backend
+    volumes:
+      - ./:/opt/src/app
+      - /opt/src/app/node_modules
+    command: npm run dev
     ports:
       - "3001:3001"
     environment:

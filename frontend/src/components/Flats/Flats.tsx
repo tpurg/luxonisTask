@@ -22,7 +22,7 @@ export const Flats = () => {
   //this function gets flats to be listed
   const getFlats = async (flatsPerPage: number, flatsPageNumber: number) => {
     const flats = await axios.get(
-      `http://localhost:8000/api/flats?limit=${flatsPerPage}&offset=${flatsPageNumber * flatsPerPage}`
+      `http://localhost:3001/api/flats?limit=${flatsPerPage}&offset=${flatsPageNumber * flatsPerPage}`
     );
 
     setFlats(flats.data);
@@ -32,7 +32,7 @@ export const Flats = () => {
   const getNumberOfPages = async () => {
     setViewPagination(false);
     const flatsNumber = await axios.get(
-      `http://localhost:8000/api/flatsNumber`
+      `http://localhost:3001/api/flatsNumber`
     );
 
     const numberOfPages = Math.ceil(flatsNumber.data / flatsPerPage);

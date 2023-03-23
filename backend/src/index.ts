@@ -1,13 +1,13 @@
 import dotenv from 'dotenv';
 import * as http from "http";
-import App from ".";
+import App from "./app";
 import {FlatRepository} from "./repository/flat.repository";
 
 dotenv.config();
 const port = process.env.PORT || 3070;
 
 App.set("port", port);
-const server = http.createServer(App);
+const server: any = http.createServer(App);
 
 FlatRepository.getInstance().insertScrapedData() 
  
@@ -17,4 +17,4 @@ server.on("listening", function(): void {
     const bind = (typeof addr === "string") ? `pipe ${addr}` : `port ${addr?.port}`;
  });
 
-module.exports = App;
+export default server;

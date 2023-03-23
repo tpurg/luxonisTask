@@ -8,7 +8,7 @@ export class FlatRepository {
   private flatRespository: any;
   private static _instance: FlatRepository;
 
-  private constructor() {  
+  private constructor() {
     this.db = connect();
     // For Development
     this.db.sequelize.sync({ force: true }).then(() => {
@@ -90,7 +90,15 @@ export class FlatRepository {
     try {
       const URL =
         "https://www.sreality.cz/en/search/for-sale/apartments/all-countries";
-      const browser = await puppeteer.launch({ headless: false });
+
+      const browserFetcher = puppeteer.createBrowserFetcher();
+      let revisionInfo = await browserFetcher.download("1095492");
+      const browser = await puppeteer.launch({
+        executablePath: revisionInfo!.executablePath,
+        ignoreDefaultArgs: ["--disable-extensions"],
+        headless: true,
+        args: ["--no-sandbox", "--disabled-setupid-sandbox"],
+      });
       const page = await browser.newPage();
 
       await page.goto(URL, { waitUntil: "networkidle2" });
@@ -102,51 +110,56 @@ export class FlatRepository {
 
       //await buttonHandle.click();
 
-      await page.waitForSelector(".szn-cmp-dialog-container", { timeout: 0 });
+      //await page.waitForSelector(".szn-cmp-dialog-container", { timeout: 0 });
 
-      console.log("Dialog detected. Click accept to continue");
- 
-      new Promise((resolve) => setTimeout(resolve, 3000)).then(async () => { 
-        while (data.length < itemsToScrape) {
-          let newResults = await page.evaluate(
-            (data, itemsToScrape) => {
-              let results: Flat[] = [];
-              let items = document.querySelectorAll(".property");
-              items.forEach((item) => {
-                if (data.length + results.length < itemsToScrape) { 
-                  results.push({
-                    name: item.querySelector(".name")
-                      ? item.querySelector(".name")!.textContent!
-                      : "",
-                    url: item
-                      .querySelector(
-                        ".ng-scope.ng-isolate-scope > div > div > a > img"
-                      )
-                      ?.getAttribute("src")!,
-                  });
-                }
-              });
+      //console.log("Dialog detected. Click accept if you want all the data scraped.");
 
-              return results;
-            },
-            data,
-            itemsToScrape
+      while (data.length < itemsToScrape) {
+        let newResults = await page.evaluate(
+          (data, itemsToScrape) => {
+            let results: Flat[] = [];
+            let items = document.querySelectorAll(
+              ".property-list .dir-property-list .property"
+            );
+            items.forEach((item) => {
+              if (data.length + results.length < itemsToScrape) {
+                results.push({
+                  name: item.querySelector(".name")
+                    ? item.querySelector(".name")!.textContent!
+                    : "",
+                  url: item
+                    .querySelector(
+                      ".ng-scope.ng-isolate-scope > div > div > a > img"
+                    )
+                    ?.getAttribute("src")!,
+                });
+              }
+            });
+
+            return results;
+          },
+          data,
+          itemsToScrape
+        );
+        data = data.concat(newResults);
+
+        if (data.length < itemsToScrape) {
+          await page.click(".paging-item .paging-next");
+          await page.waitForSelector(
+            ".property-list .dir-property-list .property",
+            { timeout: 5000 }
           );
-          data = data.concat(newResults);
-
-          if (data.length < itemsToScrape) {
-            await page.click(".paging-next");
-            await page.waitForSelector(".property");
-            await page.waitForSelector(".paging-next");
-          }
+          await page.waitForSelector(".paging-item .paging-next", {
+            timeout: 5000,
+          });
         }
-        await browser.close();
+      }
+      await browser.close();
 
-        console.log("Scrape successful");
-        console.log("Inserting data");
+      console.log("Scrape successful");
+      console.log("Inserting data");
 
-        await this.flatRespository.bulkCreate(data);
-      });
+      await this.flatRespository.bulkCreate(data);
     } catch (error) {
       console.error("ERROR", error);
 
