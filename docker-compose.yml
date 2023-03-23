@@ -1,0 +1,37 @@
+version: "1"
+services:
+  frontend:
+    container_name: frontend
+    image: frontend_template
+    build: ./frontend
+    ports:
+      - "3000:3000"
+  backend:
+    container_name: backend
+    image: backend_template
+    build:
+      context: ./backend
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - USER=nb_user
+      - PASSWORD=12345
+      - DB=nb_database
+      - DIALECT=postgres
+      - HOST=postgress_db # NAME OF THE SERVICE
+    depends_on:
+      - postgress_db
+  postgress_db:
+    container_name: postgress_db
+    image: "postgres:12"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=nb_user
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=nb_database
+    volumes:
+      - node_react_docker:/var/lib/postgresql/data
+volumes:
+  node_react_docker: {}
