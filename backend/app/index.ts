@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import * as http from "http";
-import App from "./app";
+import App from ".";
 import {FlatRepository} from "./repository/flat.repository";
 
 dotenv.config();

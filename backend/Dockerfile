@@ -1,13 +1,12 @@
-FROM node:12
+FROM node:16
 
-WORKDIR /app
+WORKDIR /opt/app/index
 
 COPY ./package.json .
-RUN npm cache clean --force
-RUN npm install
+RUN npm install && npm cache clean --force && npm build
 COPY . .
 
-EXPOSE 3000
+EXPOSE 3001
 
 # CMD npm start
 CMD [ "node", "server.js" ]
