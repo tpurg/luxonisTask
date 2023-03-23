@@ -1,12 +1,14 @@
 FROM node:16
 
-WORKDIR /opt/app/index
-
-COPY ./package.json .
-RUN npm install && npm cache clean --force && npm build
-COPY . .
-
 EXPOSE 3001
 
-# CMD npm start
-CMD [ "node", "server.js" ]
+RUN npm i npm@latest -g
+
+COPY package.json package-lock.json* ./
+
+RUN npm install --no-optional && npm cache clean --force && npm build
+
+WORKDIR /opt
+COPY . .
+
+CMD [ "node", "app/index.js" ]
