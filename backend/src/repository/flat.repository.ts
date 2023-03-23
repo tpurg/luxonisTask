@@ -111,7 +111,6 @@ export class FlatRepository {
       //await buttonHandle.click();
 
       //await page.waitForSelector(".szn-cmp-dialog-container", { timeout: 0 });
-
       //console.log("Dialog detected. Click accept if you want all the data scraped.");
 
       while (data.length < itemsToScrape) {

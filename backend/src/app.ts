@@ -58,7 +58,7 @@ class App {
         });
 
         this.express.get("/", (req, res, next) => {
-            res.send("Typescript App works!!");
+            res.send("Welcome to ScrapedFlats");
         });
 
         this.express.use("*", (req, res, next) => {

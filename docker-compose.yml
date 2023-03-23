@@ -5,7 +5,9 @@ services:
     image: frontend_template
     build: ./frontend
     ports:
-      - "3000:3000"
+      - "8081:3000"
+    expose:
+      - 8081
   backend:
     container_name: backend
     image: backend_template
